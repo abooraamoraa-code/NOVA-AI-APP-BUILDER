@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>NOVA AI App Builder</title>
+
+  <meta
+    name="description"
+    content="NOVA AI App Builder - منصة إنشاء التطبيقات بالذكاء الاصطناعي"
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #070b16;
+      --panel: #0d1324;
+      --panel-2: #111a30;
+      --border: #25304a;
+      --text: #f5f7ff;
+      --muted: #9aa6c1;
+      --primary: #6c63ff;
+      --primary-2: #8b7cff;
+      --success: #25d695;
+      --danger: #ff5d73;
+      --warning: #ffbd59;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at 15% 20%,
+          rgba(108, 99, 255, 0.18),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 85% 10%,
+          rgba(37, 214, 149, 0.08),
+          transparent 25%
+        ),
+        var(--bg);
+      color: var(--text);
+      font-family:
+        Arial,
+        Tahoma,
+        sans-serif;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 72px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7, 11, 22, 0.88);
+      backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-2)
+        );
+      font-weight: 900;
+      font-size: 19px;
+      box-shadow:
+        0 10px 30px
+        rgba(108, 99, 255, 0.28);
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 17px;
+    }
+
+    .brand-text span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .credits {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .credits strong {
+      color: var(--success);
+      margin-right: 5px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 17px;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background:
+        linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-2)
+        );
+      box-shadow:
+        0 10px 25px
+        rgba(108, 99, 255, 0.2);
+    }
+
+    .btn-secondary {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+    }
+
+    .layout {
+      display: flex;
+      flex: 1;
+    }
+
+    .sidebar {
+      width: 245px;
+      min-height: calc(100vh - 72px);
+      border-left: 1px solid var(--border);
+      background: rgba(9, 14, 27, 0.8);
+      padding: 22px 15px;
+    }
+
+    .nav-title {
+      color: #64708c;
+      font-size: 11px;
+      margin: 8px 10px 10px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav button {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 13px 14px;
+      border-radius: 12px;
+      text-align: right;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: var(--panel-2);
+      border-color: var(--border);
+      color: white;
+    }
+
+    .main {
+      flex: 1;
+      padding: 35px;
+      max-width: 1400px;
+      margin: auto;
+      width: 100%;
+    }
+
+    .hero {
+      padding: 35px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(17, 26, 48, 0.95),
+          rgba(10, 15, 29, 0.95)
+        );
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background:
+        rgba(108, 99, 255, 0.12);
+      left: -100px;
+      bottom: -150px;
+      filter: blur(10px);
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.15;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 span {
+      color: var(--primary-2);
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.8;
+      margin-bottom: 25px;
+    }
+
+    .builder {
+      margin-top: 25px;
+      background: #080d1b;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 15px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .builder textarea {
+      width: 100%;
+      min-height: 130px;
+      resize: vertical;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: white;
+      line-height: 1.8;
+    }
+
+    .builder textarea::placeholder {
+      color: #5e6982;
+    }
+
+    .builder-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hint {
+      color: #65708a;
+      font-size: 12px;
+    }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .section-title h2 {
+      font-size: 20px;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(210px, 1fr)
+        );
+      gap: 15px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 20px;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: #3a4667;
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--panel-2);
+      display: grid;
+      place-items: center;
+      margin-bottom: 15px;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--success);
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow:
+        0 0 12px
+        rgba(37, 214, 149, 0.7);
+    }
+
+    .output {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #080d1b;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      color: #dfe5f7;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+
+    @media (max-width: 850px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .topbar {
+        padding: 0 15px;
+      }
+
+      .credits {
+        display: none;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .hero {
+        padding: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <div class="logo">
+        N
+      </div>
+
+      <div class="brand-text">
+        <strong>NOVA AI</strong>
+        <span>AI App Builder</span>
+      </div>
+
+    </div>
+
+    <div class="top-actions">
+
+      <div class="credits">
+        النقاط:
+        <strong id="credits">
+          20
+        </strong>
+      </div>
+
+      <button
+        class="btn btn-secondary"
+        id="loginButton"
+        onclick="showLogin()"
+      >
+        تسجيل الدخول
+      </button>
+
+      <button
+        class="btn btn-primary"
+        onclick="startBuilding()"
+      >
+        ابدأ البناء
+      </button>
+
+    </div>
+
+  </header>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+
+      <div class="nav-title">
+        المنصة
+      </div>
+
+      <nav class="nav">
+
+        <button
+          class="active"
+          onclick="selectNav(this)"
+        >
+          🏠 الرئيسية
+        </button>
+
+        <button
+          onclick="selectNav(this)"
+        >
+          ✨ إنشاء تطبيق
+        </button>
+
+        <button
+          onclick="selectNav(this)"
+        >
+          📁 مشاريعي
+        </button>
+
+        <button
+          onclick="selectNav(this)"
+        >
+          💳 النقاط والخطط
+        </button>
+
+        <button
+          onclick="selectNav(this)"
+        >
+          📦 الملفات
+        </button>
+
+      </nav>
+
+      <div class="nav-title">
+        الحساب
+      </div>
+
+      <nav class="nav">
+
+        <button
+          onclick="selectNav(this)"
+        >
+          👤 الحساب
+        </button>
+
+        <button
+          onclick="selectNav(this)"
+        >
+          ⚙️ الإعدادات
+        </button>
+
+        <button
+          onclick="showHelp()"
+        >
+          ❓ المساعدة
+        </button>
+
+      </nav>
+
+    </aside>
+
+    <main class="main">
+
+      <section class="hero">
+
+        <div class="status">
+          <span class="dot"></span>
+          NOVA AI جاهزة
+        </div>
+
+        <h1>
+          ابنِ تطبيقك
+          <span>بالذكاء الاصطناعي</span>
+        </h1>
+
+        <p>
+          اكتب فكرتك باللغة التي تريدها،
+          ودع NOVA AI تحلل المشروع،
+          وتخطط الصفحات والميزات،
+          ثم تنشئ ملفات المشروع.
+        </p>
+
+        <div class="builder">
+
+          <textarea
+            id="prompt"
+            placeholder="مثال: أريد إنشاء متجر إلكتروني لبيع الملابس، يحتوي على تسجيل دخول، منتجات، سلة شراء، دفع، ولوحة إدارة..."
+          ></textarea>
+
+          <div class="builder-bottom">
+
+            <span class="hint">
+              اكتب وصف التطبيق بالتفصيل
+            </span>
+
+            <button
+              class="btn btn-primary"
+              onclick="startBuilding()"
+            >
+              ✨ إنشاء التطبيق
+            </button>
+
+          </div>
+
+        </div>
+
+        <div
+          class="output"
+          id="output"
+        ></div>
+
+      </section>
+
+      <section class="section">
+
+        <div class="section-title">
+
+          <h2>
+            ماذا تستطيع NOVA أن تفعل؟
+          </h2>
+
+          <span>
+            المنصة قيد التطوير
+          </span>
+
+        </div>
+
+        <div class="cards">
+
+          <article class="card">
+
+            <div class="card-icon">
+              🤖
+            </div>
+
+            <h3>
+              تحليل الفكرة
+            </h3>
+
+            <p>
+              تحليل طلبك وتحويله إلى
+              متطلبات تقنية واضحة.
+            </p>
+
+          </article>
+
+          <article class="card">
+
+            <div class="card-icon">
+              🧩
+            </div>
+
+            <h3>
+              تخطيط التطبيق
+            </h3>
+
+            <p>
+              إنشاء خطة للصفحات
+              والمكونات وقاعدة البيانات.
+            </p>
+
+          </article>
+
+          <article class="card">
+
+            <div class="card-icon">
+              💻
+            </div>
+
+            <h3>
+              إنشاء الكود
+            </h3>
+
+            <p>
+              إنشاء ملفات المشروع
+              بشكل منظم وقابل للتطوير.
+            </p>
+
+          </article>
+
+          <article class="card">
+
+            <div class="card-icon">
+              📦
+            </div>
+
+            <h3>
+              تحميل المشروع
+            </h3>
+
+            <p>
+              تجهيز ملفات المشروع
+              للتحميل والاستخدام.
+            </p>
+
+          </article>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>
+
+<script>
+
+  function selectNav(button) {
+
+    document
+      .querySelectorAll(".nav button")
+      .forEach(
+        (item) => {
+          item.classList.remove(
+            "active"
+          );
+        }
+      );
+
+    button.classList.add(
+      "active"
+    );
+  }
+
+  function showLogin() {
+
+    alert(
+      "صفحة تسجيل الدخول سيتم ربطها بنظام Supabase Auth."
+    );
+  }
+
+  function showHelp() {
+
+    alert(
+      "اكتب وصف التطبيق في مربع البناء ثم اضغط إنشاء التطبيق."
+    );
+  }
+
+  function startBuilding() {
+
+    const prompt =
+      document
+        .getElementById(
+          "prompt"
+        )
+        .value
+        .trim();
+
+    const output =
+      document
+        .getElementById(
+          "output"
+        );
+
+    if (!prompt) {
+
+      output.style.display =
+        "block";
+
+      output.textContent =
+        "اكتب فكرة التطبيق أولًا.";
+
+      return;
+    }
+
+    output.style.display =
+      "block";
+
+    output.textContent =
+      "جاري تجهيز طلبك...\n\n" +
+      "في المرحلة التالية سنربط هذه الواجهة مباشرة بـ NOVA AI و Gemini.";
+  }
+
+</script>
+
+</body>
+</html>
