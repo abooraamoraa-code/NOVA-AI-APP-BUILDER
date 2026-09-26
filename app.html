@@ -1,0 +1,3063 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>NOVA AI - لوحة التطبيق</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #070b16;
+      --bg2: #0b1020;
+      --panel: #10172a;
+      --panel2: #141d34;
+      --border: #263352;
+      --primary: #6c63ff;
+      --primary2: #8d84ff;
+      --green: #25d695;
+      --red: #ff5d73;
+      --yellow: #ffc857;
+      --text: #ffffff;
+      --muted: #929db7;
+      --muted2: #68748e;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at 10% 10%,
+          rgba(108, 99, 255, 0.15),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 90% 90%,
+          rgba(37, 214, 149, 0.07),
+          transparent 25%
+        ),
+        var(--bg);
+      color: var(--text);
+      font-family: Arial, Tahoma, sans-serif;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* =========================
+       APP
+    ========================= */
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+      width: 260px;
+      min-height: 100vh;
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(10, 15, 29, 0.96);
+      border-left: 1px solid var(--border);
+      padding: 20px 15px;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      margin-bottom: 25px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      font-weight: 900;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary2)
+      );
+      box-shadow:
+        0 10px 30px rgba(108, 99, 255, 0.25);
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .brand-text span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .nav-title {
+      color: var(--muted2);
+      font-size: 11px;
+      padding: 0 12px;
+      margin: 18px 0 8px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #b8c1d6;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: right;
+      transition: 0.2s;
+    }
+
+    .nav-item:hover {
+      background: rgba(108, 99, 255, 0.08);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: rgba(108, 99, 255, 0.14);
+      border-color: rgba(108, 99, 255, 0.25);
+      color: white;
+    }
+
+    .nav-icon {
+      width: 25px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .sidebar-bottom {
+      position: absolute;
+      bottom: 18px;
+      right: 15px;
+      left: 15px;
+    }
+
+    .credits-box {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(
+        135deg,
+        rgba(108, 99, 255, 0.12),
+        rgba(37, 214, 149, 0.04)
+      );
+      margin-bottom: 10px;
+    }
+
+    .credits-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .credits-top span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .credits-number {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .progress {
+      height: 6px;
+      border-radius: 20px;
+      background: #202a42;
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 35%;
+      background: linear-gradient(
+        90deg,
+        var(--primary),
+        var(--green)
+      );
+      border-radius: inherit;
+    }
+
+    .upgrade-small {
+      width: 100%;
+      border: 0;
+      padding: 11px;
+      border-radius: 11px;
+      color: white;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary2)
+      );
+      font-weight: 700;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      width: calc(100% - 260px);
+      margin-right: 260px;
+      min-height: 100vh;
+    }
+
+    /* =========================
+       TOPBAR
+    ========================= */
+
+    .topbar {
+      height: 72px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7, 11, 22, 0.80);
+      backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mobile-menu {
+      display: none;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .top-btn {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: #dce2f2;
+      border-radius: 10px;
+      padding: 9px 13px;
+    }
+
+    .top-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 5px 8px 5px 5px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 30px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        #4c45b8
+      );
+      font-weight: 800;
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =========================
+       CONTENT
+    ========================= */
+
+    .content {
+      padding: 30px;
+      max-width: 1500px;
+      margin: auto;
+    }
+
+    .section {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 35px;
+      background:
+        radial-gradient(
+          circle at 80% 20%,
+          rgba(108, 99, 255, 0.16),
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          rgba(16, 23, 42, 0.98),
+          rgba(10, 15, 29, 0.98)
+        );
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span {
+      color: var(--primary2);
+    }
+
+    .hero p {
+      max-width: 700px;
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 15px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn {
+      border: 0;
+      padding: 13px 18px;
+      border-radius: 12px;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary2)
+      );
+      color: white;
+      font-weight: 800;
+    }
+
+    .secondary-btn {
+      border: 1px solid var(--border);
+      padding: 13px 18px;
+      border-radius: 12px;
+      background: var(--panel);
+      color: white;
+    }
+
+    /* =========================
+       STATS
+    ========================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 17px;
+      padding: 20px;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(108, 99, 255, 0.12);
+      margin-bottom: 14px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    /* =========================
+       BUILDER
+    ========================= */
+
+    .builder {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--panel);
+      padding: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .panel-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .prompt {
+      width: 100%;
+      min-height: 230px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      outline: none;
+      background: #080d1b;
+      color: white;
+      border-radius: 14px;
+      padding: 16px;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .prompt:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.08);
+    }
+
+    .builder-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .option {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+      background: #0b1120;
+    }
+
+    .option label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 7px;
+    }
+
+    .option select {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: white;
+      background: transparent;
+    }
+
+    .build-btn {
+      width: 100%;
+      margin-top: 13px;
+      border: 0;
+      border-radius: 13px;
+      padding: 15px;
+      color: white;
+      font-size: 15px;
+      font-weight: 900;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        #5048d5
+      );
+    }
+
+    .build-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* =========================
+       AI STATUS
+    ========================= */
+
+    .ai-status {
+      border: 1px solid var(--border);
+      background: #0b1120;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid #1b2540;
+    }
+
+    .status-row:last-child {
+      border-bottom: 0;
+    }
+
+    .status-name {
+      color: #cbd3e7;
+      font-size: 12px;
+    }
+
+    .status-value {
+      font-size: 12px;
+      color: var(--green);
+    }
+
+    .activity {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border-radius: 12px;
+      background: #0b1120;
+      border: 1px solid #1d2740;
+    }
+
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .activity-text {
+      color: #b7c0d4;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       PROJECTS
+    ========================= */
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .section-header h2 {
+      font-size: 24px;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .project-card {
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      padding: 18px;
+      background: var(--panel);
+      transition: 0.2s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-2px);
+      border-color: #3b4770;
+    }
+
+    .project-icon {
+      width: 45px;
+      height: 45px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: rgba(108, 99, 255, 0.12);
+      margin-bottom: 15px;
+    }
+
+    .project-card h3 {
+      font-size: 15px;
+      margin-bottom: 7px;
+    }
+
+    .project-card p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      min-height: 42px;
+    }
+
+    .project-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #1c2640;
+    }
+
+    .project-status {
+      font-size: 11px;
+      color: var(--green);
+    }
+
+    .open-project {
+      border: 1px solid var(--border);
+      background: #0b1120;
+      color: white;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    /* =========================
+       FILES
+    ========================= */
+
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .file {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid var(--border);
+      background: #0b1120;
+      border-radius: 12px;
+      padding: 13px;
+    }
+
+    .file-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .file-icon {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: #151e35;
+    }
+
+    .file-name {
+      font-size: 13px;
+    }
+
+    .file-type {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    /* =========================
+       ACCOUNT
+    ========================= */
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .profile-box {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .big-avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 15px;
+      background: linear-gradient(
+        135deg,
+        var(--primary),
+        #4942c0
+      );
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .profile-email {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 7px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 15px 0;
+      border-bottom: 1px solid #1e2841;
+    }
+
+    .setting-row:last-child {
+      border-bottom: 0;
+    }
+
+    .setting-label {
+      font-size: 13px;
+    }
+
+    .setting-desc {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .toggle {
+      width: 42px;
+      height: 23px;
+      border: 0;
+      border-radius: 20px;
+      background: #29334d;
+      position: relative;
+    }
+
+    .toggle.active {
+      background: var(--primary);
+    }
+
+    .toggle::after {
+      content: "";
+      position: absolute;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: white;
+      top: 3px;
+      right: 3px;
+      transition: 0.2s;
+    }
+
+    .toggle.active::after {
+      right: 22px;
+    }
+
+    /* =========================
+       NOTIFICATIONS
+    ========================= */
+
+    .notification {
+      display: flex;
+      gap: 12px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 13px;
+      margin-bottom: 10px;
+    }
+
+    .notification-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(108, 99, 255, 0.12);
+    }
+
+    .notification-text {
+      flex: 1;
+    }
+
+    .notification-text strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .notification-text span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 500;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 550px;
+      background: #10172a;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .close {
+      width: 35px;
+      height: 35px;
+      border: 1px solid var(--border);
+      background: #0b1120;
+      color: white;
+      border-radius: 9px;
+    }
+
+    .modal-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      outline: none;
+      background: #080d1b;
+      color: white;
+      border-radius: 11px;
+      padding: 13px;
+      margin-bottom: 12px;
+    }
+
+    .modal-input:focus {
+      border-color: var(--primary);
+    }
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast {
+      position: fixed;
+      left: 25px;
+      bottom: 25px;
+      min-width: 250px;
+      max-width: 400px;
+      padding: 14px 16px;
+      border-radius: 13px;
+      background: #111a2e;
+      border: 1px solid var(--border);
+      color: white;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      transform: translateY(120px);
+      opacity: 0;
+      transition: 0.3s;
+      z-index: 1000;
+      font-size: 13px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 1100px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .builder {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        transform: translateX(100%);
+        transition: 0.3s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        width: 100%;
+        margin-right: 0;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .user-email {
+        display: none;
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .topbar {
+        padding: 0 15px;
+      }
+
+      .hero {
+        padding: 24px;
+      }
+
+      .hero h1 {
+        font-size: 27px;
+      }
+
+      .account-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .stats,
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .builder-options {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .primary-btn,
+      .secondary-btn {
+        width: 100%;
+      }
+
+      .top-btn {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- =========================
+       SIDEBAR
+  ========================== -->
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+      <div class="brand-logo">N</div>
+
+      <div class="brand-text">
+        <strong>NOVA AI</strong>
+        <span>AI App Builder</span>
+      </div>
+    </div>
+
+    <div class="nav-title">الرئيسية</div>
+
+    <nav class="nav">
+
+      <button class="nav-item active" data-section="dashboard">
+        <span class="nav-icon">⌂</span>
+        <span>لوحة التحكم</span>
+      </button>
+
+      <button class="nav-item" data-section="builder">
+        <span class="nav-icon">✦</span>
+        <span>إنشاء تطبيق</span>
+      </button>
+
+      <button class="nav-item" data-section="projects">
+        <span class="nav-icon">▣</span>
+        <span>مشاريعي</span>
+      </button>
+
+      <button class="nav-item" data-section="files">
+        <span class="nav-icon">▤</span>
+        <span>الملفات</span>
+      </button>
+
+      <div class="nav-title">الحساب</div>
+
+      <button class="nav-item" data-section="credits">
+        <span class="nav-icon">◈</span>
+        <span>الرصيد والباقات</span>
+      </button>
+
+      <button class="nav-item" data-section="account">
+        <span class="nav-icon">◉</span>
+        <span>حسابي</span>
+      </button>
+
+      <button class="nav-item" data-section="notifications">
+        <span class="nav-icon">♢</span>
+        <span>الإشعارات</span>
+      </button>
+
+      <button class="nav-item" id="logoutButton">
+        <span class="nav-icon">↪</span>
+        <span>تسجيل الخروج</span>
+      </button>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+      <div class="credits-box">
+
+        <div class="credits-top">
+          <span>رصيدك الحالي</span>
+          <strong class="credits-number" id="sidebarCredits">20</strong>
+        </div>
+
+        <div class="progress">
+          <span id="creditProgress"></span>
+        </div>
+
+      </div>
+
+      <button class="upgrade-small" onclick="showSection('credits')">
+        ترقية الحساب
+      </button>
+
+    </div>
+
+  </aside>
+
+  <!-- =========================
+       MAIN
+  ========================== -->
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div class="top-left">
+
+        <button class="mobile-menu" id="mobileMenu">
+          ☰
+        </button>
+
+        <div class="page-title" id="pageTitle">
+          لوحة التحكم
+        </div>
+
+      </div>
+
+      <div class="top-right">
+
+        <button
+          class="top-btn"
+          onclick="showSection('builder')"
+        >
+          + مشروع جديد
+        </button>
+
+        <button
+          class="top-btn"
+          onclick="showToast('لا توجد إشعارات جديدة')"
+        >
+          🔔
+        </button>
+
+        <div class="user-menu">
+
+          <div class="avatar" id="avatar">
+            N
+          </div>
+
+          <span
+            class="user-email"
+            id="userEmail"
+          >
+            جاري التحميل...
+          </span>
+
+        </div>
+
+      </div>
+
+    </header>
+
+    <div class="content">
+
+      <!-- =========================
+           DASHBOARD
+      ========================== -->
+
+      <section
+        class="section active"
+        id="section-dashboard"
+      >
+
+        <div class="hero">
+
+          <h1>
+            ابنِ تطبيقك باستخدام
+            <span>الذكاء الاصطناعي</span>
+          </h1>
+
+          <p>
+            اكتب فكرتك باللغة الطبيعية، ودع NOVA AI
+            يساعدك في تحويلها إلى مشروع برمجي منظم
+            وقابل للتطوير.
+          </p>
+
+          <div class="hero-actions">
+
+            <button
+              class="primary-btn"
+              onclick="showSection('builder')"
+            >
+              ✦ ابدأ بناء تطبيق
+            </button>
+
+            <button
+              class="secondary-btn"
+              onclick="showSection('projects')"
+            >
+              عرض مشاريعي
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="stats">
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              🚀
+            </div>
+
+            <div class="stat-label">
+              المشاريع
+            </div>
+
+            <div
+              class="stat-value"
+              id="projectsCount"
+            >
+              0
+            </div>
+
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              ◈
+            </div>
+
+            <div class="stat-label">
+              الرصيد
+            </div>
+
+            <div
+              class="stat-value"
+              id="dashboardCredits"
+            >
+              20
+            </div>
+
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              ✦
+            </div>
+
+            <div class="stat-label">
+              طلبات AI
+            </div>
+
+            <div
+              class="stat-value"
+              id="aiRequestsCount"
+            >
+              0
+            </div>
+
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              ✓
+            </div>
+
+            <div class="stat-label">
+              حالة النظام
+            </div>
+
+            <div
+              class="stat-value"
+              style="font-size:16px;color:var(--green)"
+            >
+              متصل
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="builder">
+
+          <div class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <div class="panel-title">
+                  ابدأ بفكرتك
+                </div>
+
+                <div class="panel-subtitle">
+                  صف التطبيق الذي تريد بناءه
+                </div>
+              </div>
+
+            </div>
+
+            <textarea
+              class="prompt"
+              id="dashboardPrompt"
+              placeholder="مثال: أريد إنشاء متجر إلكتروني لبيع الملابس يحتوي على تسجيل دخول، منتجات، سلة شراء، دفع، ولوحة تحكم..."
+            ></textarea>
+
+            <button
+              class="build-btn"
+              onclick="startBuildFromDashboard()"
+            >
+              ✦ تحليل الفكرة بواسطة NOVA AI
+            </button>
+
+          </div>
+
+          <div class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <div class="panel-title">
+                  حالة NOVA AI
+                </div>
+
+                <div class="panel-subtitle">
+                  الخدمات الأساسية
+                </div>
+              </div>
+
+            </div>
+
+            <div class="ai-status">
+
+              <div class="status-row">
+                <span class="status-name">
+                  API Server
+                </span>
+
+                <span
+                  class="status-value"
+                  id="serverStatus"
+                >
+                  ● جاهز
+                </span>
+              </div>
+
+              <div class="status-row">
+                <span class="status-name">
+                  Gemini AI
+                </span>
+
+                <span
+                  class="status-value"
+                  id="geminiStatus"
+                >
+                  ● جاهز
+                </span>
+              </div>
+
+              <div class="status-row">
+                <span class="status-name">
+                  Database
+                </span>
+
+                <span
+                  class="status-value"
+                  id="databaseStatus"
+                >
+                  ● جاهز
+                </span>
+              </div>
+
+              <div class="status-row">
+                <span class="status-name">
+                  Authentication
+                </span>
+
+                <span
+                  class="status-value"
+                >
+                  ● جاهز
+                </span>
+              </div>
+
+            </div>
+
+            <div class="activity">
+
+              <div class="activity-item">
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  المنصة جاهزة لاستقبال مشروع جديد.
+                </span>
+              </div>
+
+              <div class="activity-item">
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  يمكنك كتابة فكرتك بالعربية أو الإنجليزية.
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =========================
+           BUILDER
+      ========================== -->
+
+      <section
+        class="section"
+        id="section-builder"
+      >
+
+        <div class="section-header">
+
+          <div>
+            <h2>
+              إنشاء تطبيق جديد
+            </h2>
+
+            <p>
+              صف مشروعك وسنجهز خطة البناء.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="builder">
+
+          <div class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <div class="panel-title">
+                  وصف المشروع
+                </div>
+
+                <div class="panel-subtitle">
+                  كلما كان الوصف واضحًا كانت النتيجة أفضل.
+                </div>
+              </div>
+
+            </div>
+
+            <input
+              class="modal-input"
+              id="projectName"
+              placeholder="اسم المشروع"
+            >
+
+            <textarea
+              class="prompt"
+              id="mainPrompt"
+              placeholder="اكتب هنا كل ما تريد أن يحتويه التطبيق..."
+            ></textarea>
+
+            <div class="builder-options">
+
+              <div class="option">
+
+                <label>
+                  نوع المشروع
+                </label>
+
+                <select id="projectType">
+
+                  <option value="web">
+                    تطبيق ويب
+                  </option>
+
+                  <option value="dashboard">
+                    لوحة تحكم
+                  </option>
+
+                  <option value="store">
+                    متجر إلكتروني
+                  </option>
+
+                  <option value="saas">
+                    SaaS
+                  </option>
+
+                  <option value="landing">
+                    موقع تعريفي
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div class="option">
+
+                <label>
+                  مستوى البناء
+                </label>
+
+                <select id="buildLevel">
+
+                  <option value="standard">
+                    قياسي
+                  </option>
+
+                  <option value="advanced">
+                    متقدم
+                  </option>
+
+                  <option value="professional">
+                    احترافي
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+            <button
+              class="build-btn"
+              id="generateButton"
+              onclick="generateProject()"
+            >
+              ✦ ابدأ إنشاء المشروع
+            </button>
+
+          </div>
+
+          <div class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <div class="panel-title">
+                  مراحل البناء
+                </div>
+
+                <div class="panel-subtitle">
+                  سيتم تنفيذ المشروع على مراحل
+                </div>
+              </div>
+
+            </div>
+
+            <div class="activity">
+
+              <div class="activity-item">
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  1. تحليل الفكرة والمتطلبات
+                </span>
+              </div>
+
+              <div class="activity-item">
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  2. إنشاء خطة المشروع
+                </span>
+              </div>
+
+              <div class="activity-item">
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  3. إنشاء هيكل الملفات
+                </span>
+              </div>
+
+              <div class="activity-item">
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  4. توليد الأكواد
+                </span>
+              </div>
+
+              <div class="activity-item">
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  5. فحص المشروع
+                </span>
+              </div>
+
+              <div class="activity-item">
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  6. تجهيز المشروع للتحميل
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =========================
+           PROJECTS
+      ========================== -->
+
+      <section
+        class="section"
+        id="section-projects"
+      >
+
+        <div class="section-header">
+
+          <div>
+            <h2>
+              مشاريعي
+            </h2>
+
+            <p>
+              جميع المشاريع المرتبطة بحسابك.
+            </p>
+          </div>
+
+          <button
+            class="primary-btn"
+            onclick="showSection('builder')"
+          >
+            + مشروع جديد
+          </button>
+
+        </div>
+
+        <div
+          class="projects-grid"
+          id="projectsGrid"
+        >
+
+          <div class="project-card">
+
+            <div class="project-icon">
+              ✦
+            </div>
+
+            <h3>
+              لا توجد مشاريع بعد
+            </h3>
+
+            <p>
+              ابدأ أول مشروع لك باستخدام NOVA AI.
+            </p>
+
+            <div class="project-footer">
+
+              <span class="project-status">
+                جاهز
+              </span>
+
+              <button
+                class="open-project"
+                onclick="showSection('builder')"
+              >
+                إنشاء
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =========================
+           FILES
+      ========================== -->
+
+      <section
+        class="section"
+        id="section-files"
+      >
+
+        <div class="section-header">
+
+          <div>
+            <h2>
+              ملفات المشاريع
+            </h2>
+
+            <p>
+              الملفات التي تم توليدها بواسطة المنصة.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="panel">
+
+          <div class="file-list">
+
+            <div class="file">
+
+              <div class="file-left">
+
+                <div class="file-icon">
+                  HTML
+                </div>
+
+                <div>
+                  <div class="file-name">
+                    index.html
+                  </div>
+
+                  <div class="file-type">
+                    HTML
+                  </div>
+                </div>
+
+              </div>
+
+              <span style="color:var(--muted);font-size:11px">
+                قريبًا
+              </span>
+
+            </div>
+
+            <div class="file">
+
+              <div class="file-left">
+
+                <div class="file-icon">
+                  CSS
+                </div>
+
+                <div>
+                  <div class="file-name">
+                    style.css
+                  </div>
+
+                  <div class="file-type">
+                    CSS
+                  </div>
+                </div>
+
+              </div>
+
+              <span style="color:var(--muted);font-size:11px">
+                قريبًا
+              </span>
+
+            </div>
+
+            <div class="file">
+
+              <div class="file-left">
+
+                <div class="file-icon">
+                  JS
+                </div>
+
+                <div>
+                  <div class="file-name">
+                    app.js
+                  </div>
+
+                  <div class="file-type">
+                    JavaScript
+                  </div>
+                </div>
+
+              </div>
+
+              <span style="color:var(--muted);font-size:11px">
+                قريبًا
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =========================
+           CREDITS
+      ========================== -->
+
+      <section
+        class="section"
+        id="section-credits"
+      >
+
+        <div class="section-header">
+
+          <div>
+            <h2>
+              الرصيد والباقات
+            </h2>
+
+            <p>
+              استخدم الرصيد لتشغيل عمليات الذكاء الاصطناعي.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="stats">
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              ◈
+            </div>
+
+            <div class="stat-label">
+              الرصيد المجاني
+            </div>
+
+            <div
+              class="stat-value"
+              id="freeCredits"
+            >
+              20
+            </div>
+
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              ◆
+            </div>
+
+            <div class="stat-label">
+              الرصيد المدفوع
+            </div>
+
+            <div
+              class="stat-value"
+              id="paidCredits"
+            >
+              0
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="account-grid">
+
+          <div class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <div class="panel-title">
+                  الباقات
+                </div>
+
+                <div class="panel-subtitle">
+                  الباقات المدفوعة ستظهر هنا.
+                </div>
+              </div>
+
+            </div>
+
+            <div class="activity">
+
+              <div class="activity-item">
+
+                <span class="activity-dot"></span>
+
+                <span class="activity-text">
+                  سيتم ربط الباقات الحقيقية بقاعدة البيانات
+                  ونظام الدفع.
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <div class="panel-title">
+                  رمز ترقية
+                </div>
+
+                <div class="panel-subtitle">
+                  لديك رمز ترقية؟ يمكنك استخدامه لاحقًا.
+                </div>
+              </div>
+
+            </div>
+
+            <input
+              class="modal-input"
+              id="licenseCode"
+              placeholder="أدخل رمز الترقية"
+            >
+
+            <button
+              class="primary-btn"
+              style="width:100%"
+              onclick="redeemLicense()"
+            >
+              تفعيل الرمز
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =========================
+           ACCOUNT
+      ========================== -->
+
+      <section
+        class="section"
+        id="section-account"
+      >
+
+        <div class="section-header">
+
+          <div>
+            <h2>
+              حسابي
+            </h2>
+
+            <p>
+              معلومات وإعدادات الحساب.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="account-grid">
+
+          <div class="panel profile-box">
+
+            <div class="big-avatar" id="bigAvatar">
+              N
+            </div>
+
+            <h2>
+              حساب NOVA
+            </h2>
+
+            <div
+              class="profile-email"
+              id="profileEmail"
+            >
+              جاري التحميل...
+            </div>
+
+          </div>
+
+          <div class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <div class="panel-title">
+                  الإعدادات
+                </div>
+              </div>
+
+            </div>
+
+            <div class="setting-row">
+
+              <div>
+                <div class="setting-label">
+                  الوضع الداكن
+                </div>
+
+                <div class="setting-desc">
+                  استخدام الواجهة الداكنة
+                </div>
+              </div>
+
+              <button
+                class="toggle active"
+                onclick="this.classList.toggle('active')"
+              ></button>
+
+            </div>
+
+            <div class="setting-row">
+
+              <div>
+                <div class="setting-label">
+                  إشعارات المشاريع
+                </div>
+
+                <div class="setting-desc">
+                  تنبيهات عند اكتمال المشاريع
+                </div>
+              </div>
+
+              <button
+                class="toggle active"
+                onclick="this.classList.toggle('active')"
+              ></button>
+
+            </div>
+
+            <div class="setting-row">
+
+              <div>
+                <div class="setting-label">
+                  إشعارات الرصيد
+                </div>
+
+                <div class="setting-desc">
+                  تنبيه عند انخفاض الرصيد
+                </div>
+              </div>
+
+              <button
+                class="toggle active"
+                onclick="this.classList.toggle('active')"
+              ></button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =========================
+           NOTIFICATIONS
+      ========================== -->
+
+      <section
+        class="section"
+        id="section-notifications"
+      >
+
+        <div class="section-header">
+
+          <div>
+            <h2>
+              الإشعارات
+            </h2>
+
+            <p>
+              آخر التحديثات والتنبيهات.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="notification">
+
+          <div class="notification-icon">
+            ✦
+          </div>
+
+          <div class="notification-text">
+
+            <strong>
+              مرحبًا بك في NOVA AI
+            </strong>
+
+            <span>
+              حسابك جاهز ويمكنك البدء بإنشاء أول مشروع.
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="notification">
+
+          <div class="notification-icon">
+            ◈
+          </div>
+
+          <div class="notification-text">
+
+            <strong>
+              الرصيد
+            </strong>
+
+            <span>
+              سيتم ربط نظام الرصيد الحقيقي بالواجهة في المرحلة التالية.
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
+
+<!-- =========================
+     MODAL
+========================== -->
+
+<div
+  class="modal"
+  id="buildModal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <div>
+        <h3>
+          NOVA AI
+        </h3>
+
+        <p
+          style="color:var(--muted);font-size:12px;margin-top:5px"
+        >
+          جاري تجهيز طلبك
+        </p>
+      </div>
+
+      <button
+        class="close"
+        onclick="closeBuildModal()"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div
+      id="buildMessage"
+      style="line-height:1.9;color:#cbd3e7;font-size:13px"
+    >
+      جاري الاتصال بالخادم...
+    </div>
+
+  </div>
+
+</div>
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+<script>
+
+  /* =========================================================
+     NOVA AI APP
+  ========================================================= */
+
+  const API_BASE = "/api";
+
+  let currentUser = null;
+
+  let currentCredits = 20;
+
+  /* =========================================================
+     HELPERS
+  ========================================================= */
+
+  function getToken() {
+    return localStorage.getItem("nova_access_token") || "";
+  }
+
+  async function apiRequest(endpoint, options = {}) {
+
+    const token = getToken();
+
+    const headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(
+      `${API_BASE}${endpoint}`,
+      {
+        ...options,
+        headers
+      }
+    );
+
+    let data = {};
+
+    try {
+      data = await response.json();
+    } catch {
+      data = {};
+    }
+
+    if (!response.ok) {
+
+      const error = new Error(
+        data.message ||
+        data.error ||
+        "حدث خطأ في الطلب"
+      );
+
+      error.status = response.status;
+
+      throw error;
+    }
+
+    return data;
+  }
+
+  /* =========================================================
+     TOAST
+  ========================================================= */
+
+  let toastTimer = null;
+
+  function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(
+      () => toast.classList.remove("show"),
+      3000
+    );
+  }
+
+  /* =========================================================
+     SECTIONS
+  ========================================================= */
+
+  const sectionTitles = {
+
+    dashboard: "لوحة التحكم",
+
+    builder: "إنشاء تطبيق",
+
+    projects: "مشاريعي",
+
+    files: "الملفات",
+
+    credits: "الرصيد والباقات",
+
+    account: "حسابي",
+
+    notifications: "الإشعارات"
+
+  };
+
+  function showSection(sectionName) {
+
+    document
+      .querySelectorAll(".section")
+      .forEach(section => {
+
+        section.classList.remove("active");
+
+      });
+
+    const target =
+      document.getElementById(
+        `section-${sectionName}`
+      );
+
+    if (target) {
+      target.classList.add("active");
+    }
+
+    document
+      .querySelectorAll(".nav-item")
+      .forEach(item => {
+
+        item.classList.remove("active");
+
+        if (
+          item.dataset.section === sectionName
+        ) {
+          item.classList.add("active");
+        }
+
+      });
+
+    document.getElementById("pageTitle").textContent =
+      sectionTitles[sectionName] ||
+      "NOVA AI";
+
+    document
+      .getElementById("sidebar")
+      .classList.remove("open");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    if (sectionName === "projects") {
+      loadProjects();
+    }
+  }
+
+  document
+    .querySelectorAll(".nav-item[data-section]")
+    .forEach(item => {
+
+      item.addEventListener(
+        "click",
+        () => showSection(item.dataset.section)
+      );
+
+    });
+
+  /* =========================================================
+     MOBILE MENU
+  ========================================================= */
+
+  document
+    .getElementById("mobileMenu")
+    .addEventListener(
+      "click",
+      () => {
+
+        document
+          .getElementById("sidebar")
+          .classList.toggle("open");
+
+      }
+    );
+
+  /* =========================================================
+     LOAD USER
+  ========================================================= */
+
+  async function loadUser() {
+
+    const token = getToken();
+
+    if (!token) {
+
+      window.location.href = "login.html";
+
+      return;
+    }
+
+    try {
+
+      const data =
+        await apiRequest("/auth/user");
+
+      currentUser = data.user;
+
+      const email =
+        currentUser.email || "مستخدم NOVA";
+
+      document.getElementById(
+        "userEmail"
+      ).textContent = email;
+
+      document.getElementById(
+        "profileEmail"
+      ).textContent = email;
+
+      const letter =
+        email.charAt(0).toUpperCase();
+
+      document.getElementById(
+        "avatar"
+      ).textContent = letter;
+
+      document.getElementById(
+        "bigAvatar"
+      ).textContent = letter;
+
+    } catch (error) {
+
+      console.error(error);
+
+      if (
+        error.status === 401
+      ) {
+
+        localStorage.removeItem(
+          "nova_access_token"
+        );
+
+        localStorage.removeItem(
+          "nova_refresh_token"
+        );
+
+        window.location.href =
+          "login.html";
+
+      }
+
+    }
+
+  }
+
+  /* =========================================================
+     LOAD PROJECTS
+  ========================================================= */
+
+  async function loadProjects() {
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/projects"
+        );
+
+      if (
+        data &&
+        Array.isArray(data.projects)
+      ) {
+
+        renderProjects(
+          data.projects
+        );
+
+      }
+
+    } catch (error) {
+
+      console.log(
+        "Projects API not connected yet:",
+        error.message
+      );
+
+    }
+
+  }
+
+  function renderProjects(projects) {
+
+    const grid =
+      document.getElementById(
+        "projectsGrid"
+      );
+
+    if (!projects.length) {
+
+      grid.innerHTML = `
+        <div class="project-card">
+
+          <div class="project-icon">
+            ✦
+          </div>
+
+          <h3>
+            لا توجد مشاريع بعد
+          </h3>
+
+          <p>
+            ابدأ أول مشروع لك باستخدام NOVA AI.
+          </p>
+
+          <div class="project-footer">
+
+            <span class="project-status">
+              جاهز
+            </span>
+
+            <button
+              class="open-project"
+              onclick="showSection('builder')"
+            >
+              إنشاء
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+      return;
+    }
+
+    grid.innerHTML =
+      projects
+        .map(project => {
+
+          return `
+            <div class="project-card">
+
+              <div class="project-icon">
+                🚀
+              </div>
+
+              <h3>
+                ${escapeHtml(
+                  project.name || "مشروع بدون اسم"
+                )}
+              </h3>
+
+              <p>
+                ${escapeHtml(
+                  project.description ||
+                  "مشروع NOVA AI"
+                )}
+              </p>
+
+              <div class="project-footer">
+
+                <span class="project-status">
+                  ${escapeHtml(
+                    project.status || "draft"
+                  )}
+                </span>
+
+                <button
+                  class="open-project"
+                  onclick="openProject('${project.id}')"
+                >
+                  فتح
+                </button>
+
+              </div>
+
+            </div>
+          `;
+
+        })
+        .join("");
+
+    document.getElementById(
+      "projectsCount"
+    ).textContent =
+      projects.length;
+
+  }
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+  function openProject(id) {
+
+    showToast(
+      `سيتم فتح المشروع ${id}`
+    );
+
+  }
+
+  /* =========================================================
+     START BUILD
+  ========================================================= */
+
+  function startBuildFromDashboard() {
+
+    const prompt =
+      document
+        .getElementById(
+          "dashboardPrompt"
+        )
+        .value
+        .trim();
+
+    if (!prompt) {
+
+      showToast(
+        "اكتب فكرة التطبيق أولًا"
+      );
+
+      return;
+    }
+
+    document.getElementById(
+      "mainPrompt"
+    ).value = prompt;
+
+    showSection("builder");
+
+  }
+
+  /* =========================================================
+     GENERATE PROJECT
+  ========================================================= */
+
+  async function generateProject() {
+
+    const name =
+      document
+        .getElementById(
+          "projectName"
+        )
+        .value
+        .trim();
+
+    const prompt =
+      document
+        .getElementById(
+          "mainPrompt"
+        )
+        .value
+        .trim();
+
+    const type =
+      document
+        .getElementById(
+          "projectType"
+        )
+        .value;
+
+    const level =
+      document
+        .getElementById(
+          "buildLevel"
+        )
+        .value;
+
+    if (!name) {
+
+      showToast(
+        "اكتب اسم المشروع"
+      );
+
+      return;
+    }
+
+    if (!prompt) {
+
+      showToast(
+        "اكتب وصف المشروع"
+      );
+
+      return;
+    }
+
+    const button =
+      document.getElementById(
+        "generateButton"
+      );
+
+    button.disabled = true;
+
+    button.textContent =
+      "جاري إرسال المشروع...";
+
+    document.getElementById(
+      "buildModal"
+    ).classList.add("show");
+
+    document.getElementById(
+      "buildMessage"
+    ).textContent =
+      "جاري إرسال فكرتك إلى خادم NOVA AI...";
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/projects",
+          {
+            method: "POST",
+
+            body: JSON.stringify({
+              name,
+              prompt,
+              description:
+                `نوع المشروع: ${type} - المستوى: ${level}`
+            })
+          }
+        );
+
+      document.getElementById(
+        "buildMessage"
+      ).innerHTML = `
+        <strong style="color:var(--green)">
+          تم إنشاء المشروع بنجاح
+        </strong>
+
+        <br><br>
+
+        سيتم في المرحلة التالية تشغيل
+        Gemini وتحويل الفكرة إلى خطة
+        وملفات وأكواد.
+
+        <br><br>
+
+        رقم المشروع:
+        ${escapeHtml(
+          data.project?.id ||
+          data.id ||
+          "تم الإنشاء"
+        )}
+      `;
+
+      showToast(
+        "تم إنشاء المشروع"
+      );
+
+      loadProjects();
+
+    } catch (error) {
+
+      document.getElementById(
+        "buildMessage"
+      ).innerHTML = `
+        <strong style="color:var(--red)">
+          لم يتم إنشاء المشروع
+        </strong>
+
+        <br><br>
+
+        ${escapeHtml(
+          error.message
+        )}
+      `;
+
+    } finally {
+
+      button.disabled = false;
+
+      button.textContent =
+        "✦ ابدأ إنشاء المشروع";
+
+    }
+
+  }
+
+  /* =========================================================
+     MODAL
+  ========================================================= */
+
+  function closeBuildModal() {
+
+    document
+      .getElementById(
+        "buildModal"
+      )
+      .classList.remove("show");
+
+  }
+
+  /* =========================================================
+     LICENSE
+  ========================================================= */
+
+  async function redeemLicense() {
+
+    const input =
+      document.getElementById(
+        "licenseCode"
+      );
+
+    const code =
+      input.value.trim();
+
+    if (!code) {
+
+      showToast(
+        "أدخل رمز الترقية"
+      );
+
+      return;
+    }
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/licenses/redeem",
+          {
+            method: "POST",
+
+            body: JSON.stringify({
+              code
+            })
+          }
+        );
+
+      showToast(
+        data.message ||
+        "تم تفعيل الرمز"
+      );
+
+      input.value = "";
+
+      loadCredits();
+
+    } catch (error) {
+
+      showToast(
+        error.message ||
+        "تعذر تفعيل الرمز"
+      );
+
+    }
+
+  }
+
+  /* =========================================================
+     LOAD CREDITS
+  ========================================================= */
+
+  async function loadCredits() {
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/credits"
+        );
+
+      if (
+        data &&
+        data.credits
+      ) {
+
+        const free =
+          Number(
+            data.credits.free || 0
+          );
+
+        const paid =
+          Number(
+            data.credits.paid || 0
+          );
+
+        currentCredits =
+          free + paid;
+
+        document.getElementById(
+          "dashboardCredits"
+        ).textContent =
+          currentCredits;
+
+        document.getElementById(
+          "sidebarCredits"
+        ).textContent =
+          currentCredits;
+
+        document.getElementById(
+          "freeCredits"
+        ).textContent =
+          free;
+
+        document.getElementById(
+          "paidCredits"
+        ).textContent =
+          paid;
+
+      }
+
+    } catch (error) {
+
+      console.log(
+        "Credits API not connected yet:",
+        error.message
+      );
+
+    }
+
+  }
+
+  /* =========================================================
+     HEALTH CHECK
+  ========================================================= */
+
+  async function checkSystem() {
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/health"
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          "Server unavailable"
+        );
+      }
+
+      document.getElementById(
+        "serverStatus"
+      ).textContent =
+        "● متصل";
+
+    } catch {
+
+      document.getElementById(
+        "serverStatus"
+      ).textContent =
+        "● غير متصل";
+
+      document.getElementById(
+        "serverStatus"
+      ).style.color =
+        "var(--red)";
+
+    }
+
+  }
+
+  /* =========================================================
+     LOGOUT
+  ========================================================= */
+
+  document
+    .getElementById("logoutButton")
+    .addEventListener(
+      "click",
+      async function() {
+
+        try {
+
+          await apiRequest(
+            "/auth/logout",
+            {
+              method: "POST"
+            }
+          );
+
+        } catch (error) {
+
+          console.log(
+            "Logout request:",
+            error.message
+          );
+
+        }
+
+        localStorage.removeItem(
+          "nova_access_token"
+        );
+
+        localStorage.removeItem(
+          "nova_refresh_token"
+        );
+
+        window.location.href =
+          "login.html";
+
+      }
+    );
+
+  /* =========================================================
+     INIT
+  ========================================================= */
+
+  async function initApp() {
+
+    await loadUser();
+
+    await loadCredits();
+
+    await loadProjects();
+
+    await checkSystem();
+
+  }
+
+  initApp();
+
+</script>
+
+</body>
+</html>
